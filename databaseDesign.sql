@@ -1,7 +1,6 @@
---FOOD WASTE MANAGEMENT ANALYSIS--
+-- food waste management analysis --
 
-
---table craetion --
+-- table creation --
 -- create fact table
 
 create table fact_food_waste (
@@ -57,19 +56,21 @@ create table fact_food_waste (
         references dim_waste_level(waste_level_id)
 );
 
---Check total records--
+-- check total records
+
 select count(*)
 from food_waste;
 
+-- table structure verification
 
---Table structure verification--
 select *
 from information_schema.columns
 where table_name = 'food_waste'
 and table_schema = 'public'
 order by ordinal_position;
 
---Verify Constraints--
+-- verify constraints
+
 select
     conname,
     contype,
@@ -77,153 +78,152 @@ select
 from pg_constraint
 where conrelid = 'public.food_waste'::regclass;
 
-
 -- create weather dimension table
 
-CREATE TABLE dim_weather (
-    weather_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    weather_name VARCHAR(50) UNIQUE NOT NULL
+create table dim_weather (
+    weather_id integer generated always as identity primary key,
+    weather_name varchar(50) unique not null
 );
 
 -- insert unique weather values
 
-INSERT INTO dim_weather (weather_name)
-SELECT DISTINCT
-    TRIM(weather)
-FROM food_waste
-WHERE weather IS NOT NULL;
+insert into dim_weather (weather_name)
+select distinct
+    trim(weather)
+from food_waste
+where weather is not null;
 
 -- verify weather dimension
 
-SELECT *
-FROM dim_weather
-ORDER BY weather_id;
+select *
+from dim_weather
+order by weather_id;
 
 -- create business dimension table
 
-CREATE TABLE dim_business (
-    business_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    business_type VARCHAR(100) UNIQUE NOT NULL
+create table dim_business (
+    business_id integer generated always as identity primary key,
+    business_type varchar(100) unique not null
 );
 
 -- insert unique business types
 
-INSERT INTO dim_business (business_type)
-SELECT DISTINCT
-    TRIM(business_type)
-FROM food_waste
-WHERE business_type IS NOT NULL;
+insert into dim_business (business_type)
+select distinct
+    trim(business_type)
+from food_waste
+where business_type is not null;
 
 -- verify business dimension
 
-SELECT *
-FROM dim_business
-ORDER BY business_id;
+select *
+from dim_business
+order by business_id;
 
 -- create food category dimension table
 
-CREATE TABLE dim_food_category (
-    category_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    food_category VARCHAR(100) UNIQUE NOT NULL
+create table dim_food_category (
+    category_id integer generated always as identity primary key,
+    food_category varchar(100) unique not null
 );
 
 -- insert unique food categories
 
-INSERT INTO dim_food_category (food_category)
-SELECT DISTINCT
-    TRIM(food_category)
-FROM food_waste
-WHERE food_category IS NOT NULL;
+insert into dim_food_category (food_category)
+select distinct
+    trim(food_category)
+from food_waste
+where food_category is not null;
 
 -- verify food category dimension
 
-SELECT *
-FROM dim_food_category
-ORDER BY category_id;
+select *
+from dim_food_category
+order by category_id;
 
 -- create waste reason dimension table
 
-CREATE TABLE dim_waste_reason (
-    waste_reason_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    waste_reason VARCHAR(150) UNIQUE NOT NULL
+create table dim_waste_reason (
+    waste_reason_id integer generated always as identity primary key,
+    waste_reason varchar(150) unique not null
 );
 
 -- insert unique waste reasons
 
-INSERT INTO dim_waste_reason (waste_reason)
-SELECT DISTINCT
-    TRIM(waste_reason)
-FROM food_waste
-WHERE waste_reason IS NOT NULL;
+insert into dim_waste_reason (waste_reason)
+select distinct
+    trim(waste_reason)
+from food_waste
+where waste_reason is not null;
 
 -- verify waste reason dimension
 
-SELECT *
-FROM dim_waste_reason
-ORDER BY waste_reason_id;
+select *
+from dim_waste_reason
+order by waste_reason_id;
 
 -- create promotion dimension table
 
-CREATE TABLE dim_promotion (
-    promotion_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    promotion_status VARCHAR(50) UNIQUE NOT NULL
+create table dim_promotion (
+    promotion_id integer generated always as identity primary key,
+    promotion_status varchar(50) unique not null
 );
 
 -- insert unique promotion values
 
-INSERT INTO dim_promotion (promotion_status)
-SELECT DISTINCT
-    TRIM(promotion)
-FROM food_waste
-WHERE promotion IS NOT NULL;
+insert into dim_promotion (promotion_status)
+select distinct
+    trim(promotion)
+from food_waste
+where promotion is not null;
 
 -- create donation dimension table
 
-CREATE TABLE dim_donation (
-    donation_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    donation_status VARCHAR(50) UNIQUE NOT NULL
+create table dim_donation (
+    donation_id integer generated always as identity primary key,
+    donation_status varchar(50) unique not null
 );
 
 -- insert unique donation values
 
-INSERT INTO dim_donation (donation_status)
-SELECT DISTINCT
-    TRIM(donation_made)
-FROM food_waste
-WHERE donation_made IS NOT NULL;
+insert into dim_donation (donation_status)
+select distinct
+    trim(donation_made)
+from food_waste
+where donation_made is not null;
 
 -- create waste level dimension table
 
-CREATE TABLE dim_waste_level (
-    waste_level_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    waste_level VARCHAR(50) UNIQUE NOT NULL
+create table dim_waste_level (
+    waste_level_id integer generated always as identity primary key,
+    waste_level varchar(50) unique not null
 );
 
 -- insert unique waste levels
 
-INSERT INTO dim_waste_level (waste_level)
-SELECT DISTINCT
-    TRIM(waste_level)
-FROM food_waste
-WHERE waste_level IS NOT NULL;
+insert into dim_waste_level (waste_level)
+select distinct
+    trim(waste_level)
+from food_waste
+where waste_level is not null;
 
 -- create date dimension table
 
-CREATE TABLE dim_date (
-    date_id INTEGER PRIMARY KEY,
-    full_date DATE UNIQUE NOT NULL,
-    day_number INTEGER NOT NULL,
-    day_name VARCHAR(20) NOT NULL,
-    month_number INTEGER NOT NULL,
-    month_name VARCHAR(20) NOT NULL,
-    quarter_number INTEGER NOT NULL,
-    year_number INTEGER NOT NULL,
-    week_number INTEGER NOT NULL
+create table dim_date (
+    date_id integer primary key,
+    full_date date unique not null,
+    day_number integer not null,
+    day_name varchar(20) not null,
+    month_number integer not null,
+    month_name varchar(20) not null,
+    quarter_number integer not null,
+    year_number integer not null,
+    week_number integer not null
 );
 
 -- insert date records
 
-INSERT INTO dim_date (
+insert into dim_date (
     date_id,
     full_date,
     day_number,
@@ -234,28 +234,28 @@ INSERT INTO dim_date (
     year_number,
     week_number
 )
-SELECT
-    TO_CHAR(d, 'YYYYMMDD')::INTEGER,
+select
+    to_char(d, 'yyyymmdd')::integer,
     d,
-    EXTRACT(DAY FROM d)::INTEGER,
-    TRIM(TO_CHAR(d, 'Day')),
-    EXTRACT(MONTH FROM d)::INTEGER,
-    TRIM(TO_CHAR(d, 'Month')),
-    EXTRACT(QUARTER FROM d)::INTEGER,
-    EXTRACT(YEAR FROM d)::INTEGER,
-    EXTRACT(WEEK FROM d)::INTEGER
-FROM GENERATE_SERIES(
-    (SELECT MIN(order_date) FROM food_waste),
-    (SELECT MAX(order_date) FROM food_waste),
-    INTERVAL '1 day'
-) AS dates(d);
+    extract(day from d)::integer,
+    trim(to_char(d, 'day')),
+    extract(month from d)::integer,
+    trim(to_char(d, 'month')),
+    extract(quarter from d)::integer,
+    extract(year from d)::integer,
+    extract(week from d)::integer
+from generate_series(
+    (select min(order_date) from food_waste),
+    (select max(order_date) from food_waste),
+    interval '1 day'
+) as dates(d);
 
 -- verify dimension tables
 
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema = 'public'
-AND table_name IN (
+select table_name
+from information_schema.tables
+where table_schema = 'public'
+and table_name in (
     'dim_date',
     'dim_business',
     'dim_food_category',
@@ -265,8 +265,5 @@ AND table_name IN (
     'dim_donation',
     'dim_waste_level'
 )
-ORDER BY table_name;
+order by table_name;
 
-
-
-DROP TABLE IF EXISTS food_waste;
